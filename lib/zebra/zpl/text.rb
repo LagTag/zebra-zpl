@@ -14,6 +14,10 @@ module Zebra
         @font_size = f
       end
 
+      def bold=(value)
+        @bold = value
+      end
+
       def width=(width)
         unless (margin.nil? || margin < 1)
           @width = (width - (margin*2))
@@ -57,13 +61,13 @@ module Zebra
         @print_mode || PrintMode::NORMAL
       end
 
-      def h_multiplier
-        @h_multiplier || HorizontalMultiplier::VALUE_1
-      end
-
-      def v_multiplier
-        @v_multiplier || VerticalMultiplier::VALUE_1
-      end
+      # def h_multiplier
+      #   @h_multiplier || HorizontalMultiplier::VALUE_1
+      # end
+      #
+      # def v_multiplier
+      #   @v_multiplier || VerticalMultiplier::VALUE_1
+      # end
 
       def print_mode
         @print_mode || PrintMode::NORMAL
@@ -73,24 +77,24 @@ module Zebra
         @max_lines || 4
       end
 
-      def h_multiplier=(multiplier)
-        HorizontalMultiplier.validate_multiplier multiplier
-        @h_multiplier = multiplier
-      end
-
-      def v_multiplier=(multiplier)
-        VerticalMultiplier.validate_multiplier multiplier
-        @v_multiplier = multiplier
-      end
+      # def h_multiplier=(multiplier)
+      #   HorizontalMultiplier.validate_multiplier multiplier
+      #   @h_multiplier = multiplier
+      # end
+      #
+      # def v_multiplier=(multiplier)
+      #   VerticalMultiplier.validate_multiplier multiplier
+      #   @v_multiplier = multiplier
+      # end
 
       def to_zpl
         check_attributes
-        zpl = "^FW#{rotation}^CF#{font_type},#{font_size}^CI28^FO#{x},#{y}^FB#{width},#{max_lines},#{line_spacing},#{justification},#{hanging_indent}^FD#{data}^FS"
-        if bold.present?
-          zpl += "^FW#{rotation}^CF#{font_type},#{font_size}^CI28^FO#{x+2},#{y}^FB#{width},#{max_lines},#{line_spacing},#{justification},#{hanging_indent}^FD#{data}^FS" 
-          zpl += "^FW#{rotation}^CF#{font_type},#{font_size}^CI28^FO#{x},#{y+2}^FB#{width},#{max_lines},#{line_spacing},#{justification},#{hanging_indent}^FD#{data}^FS" 
+        if !bold.nil?
+          "^FW#{rotation}^CF#{font_type},#{font_size}^CI28^FO#{x+2},#{y}^FB#{width},#{max_lines},#{line_spacing},#{justification},#{hanging_indent}^FD#{data}^FS" +
+          "^FW#{rotation}^CF#{font_type},#{font_size}^CI28^FO#{x},#{y+2}^FB#{width},#{max_lines},#{line_spacing},#{justification},#{hanging_indent}^FD#{data}^FS"
+        else
+          "^FW#{rotation}^CF#{font_type},#{font_size}^CI28^FO#{x},#{y}^FB#{width},#{max_lines},#{line_spacing},#{justification},#{hanging_indent}^FD#{data}^FS"
         end
-        zpl
       end
 
       private

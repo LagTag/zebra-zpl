@@ -5,9 +5,11 @@ module Zebra
     class Box
       include Printable
 
-      class InvalidLineThickness < StandardError; end
+      class InvalidLineThickness  < StandardError; end
+      class InvalidRoundingDegree < StandardError; end
+      class InvalidColorError     < StandardError; end
 
-      attr_reader :line_thickness, :box_width, :box_height, :width
+      attr_reader :line_thickness, :box_width, :box_height, :width, :color, :rounding_degree
 
       def line_thickness=(thickness)
         raise InvalidLineThickness unless thickness.nil? || thickness.to_i.to_s == thickness.to_s
@@ -27,10 +29,20 @@ module Zebra
         @box_height = height
       end
 
+      def rounding_degree=(value)
+        raise InvalidLineThickness unless (1..8).include?(value.to_i)
+        @rounding_degree = value
+      end
+
+      def color=(value)
+        raise InvalidColorError unless %w[B W].include?(value&.upcase)
+        @color = value
+      end
+
       def to_zpl
         check_attributes
-        # "^FO#{x},#{y}^GB#{box_width},#{box_height},#{line_thickness}^FS"
-        "^FO#{x},#{y}^GB#{box_width},#{box_height},#{line_thickness}^FS"
+        puts "The Box class is deprecated. Please switch to the Graphic class (graphic_type = box)." unless ENV['RUBY_ENV'] == 'test'
+        "^FO#{x},#{y}^GB#{box_width},#{box_height},#{line_thickness},#{color},#{rounding_degree}^FS"
       end
 
       private
