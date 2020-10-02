@@ -31,10 +31,6 @@ module Zebra
         @max_lines = value
       end
 
-      def bold=(value)
-        @bold = value
-      end
-
       def line_spacing=(value)
         @line_spacing = value || 0
       end
